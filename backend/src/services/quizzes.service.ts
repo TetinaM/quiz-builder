@@ -29,9 +29,11 @@ export async function createQuiz(input: CreateQuizInput) {
           text: question.text,
           order: questionIndex,
           correctBoolean:
-            question.type === "BOOLEAN" ? question.correctBoolean ?? null : null,
+            question.type === "BOOLEAN"
+              ? (question.correctBoolean ?? null)
+              : null,
           correctText:
-            question.type === "INPUT" ? question.correctText ?? null : null,
+            question.type === "INPUT" ? (question.correctText ?? null) : null,
           options:
             question.type === "CHECKBOX" && question.options
               ? {

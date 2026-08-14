@@ -1,10 +1,18 @@
-import {
-  CreateQuizPayload,
-  QuizDetail,
-  QuizSummary,
-} from "@/types/quiz";
+import { CreateQuizPayload, QuizDetail, QuizSummary } from "@/types/quiz";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+// Carries the HTTP status so callers can distinguish e.g. 404 (render
+// notFound()) from other failures (let it bubble as an unexpected error).
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
@@ -16,7 +24,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const body = (await res.json().catch(() => null)) as {
       message?: string;
     } | null;
-    throw new Error(body?.message ?? `Request failed with status ${res.status}`);
+    throw new ApiError(
+      res.status,
+      body?.message ?? `Request failed with status ${res.status}`,
+    );
   }
 
   if (res.status === 204) {

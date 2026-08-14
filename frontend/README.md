@@ -2,10 +2,9 @@
 
 Next.js (App Router) + TypeScript + Tailwind CSS app for the Quiz Builder.
 
-Pages (`/create`, `/quizzes`, `/quizzes/:id`) land in Phases 7–9 — see
-[`../rules/02-workflow-phases.md`](../rules/02-workflow-phases.md) and
-[`../rules/05-frontend-rules.md`](../rules/05-frontend-rules.md). This file
-covers what exists so far: the scaffold, the typed API client, and shared types.
+> Full setup instructions (Docker, migrations, running both apps) live in the
+> root [`../README.md`](../README.md). This file covers the frontend's own
+> structure: the scaffold, the typed API client, and shared types.
 
 ## Running locally
 

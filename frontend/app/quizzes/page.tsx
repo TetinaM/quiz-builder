@@ -85,7 +85,10 @@ export default function QuizzesPage() {
       {status === "ready" && quizzes.length === 0 && (
         <div className="flex flex-col items-start gap-3 rounded-lg border border-dashed border-zinc-300 p-6 text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
           <p>No quizzes yet.</p>
-          <Link href="/create" className="font-medium text-zinc-900 underline dark:text-zinc-50">
+          <Link
+            href="/create"
+            className="font-medium text-zinc-900 underline dark:text-zinc-50"
+          >
             Create one
           </Link>
         </div>

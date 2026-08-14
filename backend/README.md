@@ -3,9 +3,7 @@
 Express + TypeScript + Prisma (PostgreSQL) API for the Quiz Builder.
 
 > Full setup instructions (Docker, migrations, running both apps) live in the
-> root [`../README.md`](../README.md) once it's written (Phase 13). This file
-> is the API reference, frozen at the end of Phase 5 before frontend work
-> starts.
+> root [`../README.md`](../README.md). This file is the API reference.
 
 ## Running locally
 
@@ -20,8 +18,9 @@ npm run dev                                      # http://localhost:4000
 ## Data model
 
 Three question types share one `Question` table (nullable per-type answer
-columns) plus a separate `Option` table for `CHECKBOX` choices. Full
-rationale: [`../rules/03-database-schema.md`](../rules/03-database-schema.md).
+columns) plus a separate `Option` table for `CHECKBOX` choices — this keeps
+every field strongly typed instead of using a JSON blob, at the cost of a
+few always-null columns depending on question type.
 
 ```
 QuestionType = "BOOLEAN" | "INPUT" | "CHECKBOX"
@@ -44,8 +43,16 @@ Request body:
 {
   "title": "Capitals Quiz",
   "questions": [
-    { "type": "BOOLEAN", "text": "Paris is the capital of France.", "correctBoolean": true },
-    { "type": "INPUT", "text": "What is the capital of Japan?", "correctText": "Tokyo" },
+    {
+      "type": "BOOLEAN",
+      "text": "Paris is the capital of France.",
+      "correctBoolean": true
+    },
+    {
+      "type": "INPUT",
+      "text": "What is the capital of Japan?",
+      "correctText": "Tokyo"
+    },
     {
       "type": "CHECKBOX",
       "text": "Which of these are EU capitals?",
@@ -75,7 +82,14 @@ Validation (400 on failure, one message per violated rule):
 **200** → every quiz, summarized:
 
 ```json
-[{ "id": "uuid", "title": "Capitals Quiz", "questionCount": 3, "createdAt": "2026-08-14T16:29:29.133Z" }]
+[
+  {
+    "id": "uuid",
+    "title": "Capitals Quiz",
+    "questionCount": 3,
+    "createdAt": "2026-08-14T16:29:29.133Z"
+  }
+]
 ```
 
 ### `GET /quizzes/:id`
@@ -91,6 +105,4 @@ cascade). **404** → `{ "message": "Quiz not found" }` if the id doesn't exist.
 ## Error shape
 
 Every error response, regardless of cause, is `{ "message": string }` with an
-appropriate status code (400 validation, 404 not found, 500 unexpected). See
-[`../rules/04-backend-rules.md`](../rules/04-backend-rules.md) for the full
-error-handling rules.
+appropriate status code (400 validation, 404 not found, 500 unexpected).
