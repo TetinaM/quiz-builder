@@ -1,5 +1,6 @@
-// Mirrors backend/src/... response shapes field-for-field. Keep in sync by
-// hand — see rules/05-frontend-rules.md for why there's no shared package.
+// Mirrors the backend's response shapes field-for-field. Kept in sync by
+// hand rather than a shared package/codegen — the two apps are small and
+// independently deployable, so that overhead isn't worth it here.
 
 export type QuestionType = "BOOLEAN" | "INPUT" | "CHECKBOX";
 

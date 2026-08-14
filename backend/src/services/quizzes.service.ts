@@ -6,8 +6,9 @@ import { CreateQuizBody } from "../validation/quizzes.schema";
 // the POST /quizzes shape) — see validation/quizzes.schema.ts.
 export type CreateQuizInput = CreateQuizBody;
 
-// Shared "full nested quiz" include shape, ordered per the `order` column —
-// see rules/03-database-schema.md for why `order` exists.
+// Shared "full nested quiz" include shape. Ordered by `order` — an explicit
+// column rather than relying on insertion order, since a relational DB
+// doesn't guarantee rows come back in the order they were created.
 const quizWithQuestionsInclude = {
   questions: {
     orderBy: { order: "asc" as const },
@@ -28,6 +29,9 @@ export async function createQuiz(input: CreateQuizInput) {
           type: question.type,
           text: question.text,
           order: questionIndex,
+          // Only the answer column matching this question's type gets a
+          // value; the other type-specific columns stay null (see the
+          // schema comment in prisma/schema.prisma).
           correctBoolean:
             question.type === "BOOLEAN"
               ? (question.correctBoolean ?? null)

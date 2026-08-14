@@ -1,3 +1,5 @@
+import { Check } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
 import { Question } from "@/types/quiz";
 
 interface QuestionViewProps {
@@ -5,24 +7,37 @@ interface QuestionViewProps {
   index: number;
 }
 
-// Structural, read-only rendering of one question — never for solving, per
-// project.txt ("Render questions in read-only mode ... just structure").
-// All inputs below are disabled; nothing here is interactive.
+const TYPE_LABEL: Record<Question["type"], string> = {
+  BOOLEAN: "True / False",
+  INPUT: "Short answer",
+  CHECKBOX: "Multiple choice",
+};
+
+// Read-only rendering of one question — shows its structure and correct
+// answer(s), never an interactive "solve it" form. All inputs below are
+// disabled.
 export function QuestionView({ question, index }: QuestionViewProps) {
   return (
-    <li className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-      <p className="font-medium text-zinc-900 dark:text-zinc-50">
-        {index + 1}. {question.text}
-      </p>
+    <li className="rounded-xl border border-border bg-surface p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <p className="font-medium text-ink">
+          <span className="mr-2 text-primary">{index + 1}.</span>
+          {question.text}
+        </p>
+        <Badge variant="neutral" className="shrink-0">
+          {TYPE_LABEL[question.type]}
+        </Badge>
+      </div>
 
       {question.type === "BOOLEAN" && (
-        <div className="mt-3 flex gap-6 text-sm text-zinc-700 dark:text-zinc-300">
+        <div className="mt-3 flex gap-6 text-sm text-ink-soft">
           <label className="flex items-center gap-2">
             <input
               type="radio"
               checked={question.correctBoolean === true}
               disabled
               readOnly
+              className="accent-primary"
             />
             True
           </label>
@@ -32,6 +47,7 @@ export function QuestionView({ question, index }: QuestionViewProps) {
               checked={question.correctBoolean === false}
               disabled
               readOnly
+              className="accent-primary"
             />
             False
           </label>
@@ -39,16 +55,14 @@ export function QuestionView({ question, index }: QuestionViewProps) {
       )}
 
       {question.type === "INPUT" && (
-        <p className="mt-3 text-sm text-zinc-700 dark:text-zinc-300">
+        <p className="mt-3 text-sm text-ink-soft">
           Answer:{" "}
-          <span className="font-medium text-zinc-900 dark:text-zinc-50">
-            {question.correctText}
-          </span>
+          <span className="font-medium text-ink">{question.correctText}</span>
         </p>
       )}
 
       {question.type === "CHECKBOX" && (
-        <ul className="mt-3 flex flex-col gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+        <ul className="mt-3 flex flex-col gap-2 text-sm text-ink-soft">
           {question.options.map((option) => (
             <li key={option.id} className="flex items-center gap-2">
               <input
@@ -56,12 +70,14 @@ export function QuestionView({ question, index }: QuestionViewProps) {
                 checked={option.isCorrect}
                 disabled
                 readOnly
+                className="accent-primary"
               />
               <span>{option.text}</span>
               {option.isCorrect && (
-                <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-400">
+                <Badge variant="accent">
+                  <Check className="h-3 w-3" aria-hidden="true" />
                   correct
-                </span>
+                </Badge>
               )}
             </li>
           ))}

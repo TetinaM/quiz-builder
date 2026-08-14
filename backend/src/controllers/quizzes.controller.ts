@@ -2,9 +2,6 @@ import { Request, Response } from "express";
 import * as quizzesService from "../services/quizzes.service";
 import { CreateQuizBody } from "../validation/quizzes.schema";
 
-// `req.params.id` is typed `string | string[]` by Express 5 (path-to-regexp
-// v8 allows repeated params); our routes only ever use a single named `:id`
-// segment, so it's always a plain string at runtime.
 function paramId(req: Request): string {
   return req.params.id as string;
 }

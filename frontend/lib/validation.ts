@@ -30,10 +30,10 @@ const checkboxQuestionSchema = z.object({
 });
 
 // Discriminated on `type`, mirroring backend/src/validation/quizzes.schema.ts
-// exactly — see rules/05-frontend-rules.md. The *output* of this schema
-// (after zodResolver runs it) is shaped exactly like CreateQuizPayload in
-// types/quiz.ts, so submit handlers can pass RHF's data straight to
-// createQuiz() with no extra mapping.
+// exactly. The *output* of this schema (after zodResolver runs it) is
+// shaped exactly like CreateQuizPayload in types/quiz.ts, so submit
+// handlers can pass RHF's data straight to createQuiz() with no extra
+// mapping.
 const questionSchema = z.discriminatedUnion("type", [
   booleanQuestionSchema,
   inputQuestionSchema,

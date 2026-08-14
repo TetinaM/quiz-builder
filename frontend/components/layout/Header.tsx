@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ListChecks } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/quizzes", label: "Quizzes" },
@@ -15,15 +16,18 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+    <header className="bg-header text-white shadow-sm">
       <div className="mx-auto flex w-full max-w-2xl items-center justify-between px-4 py-4">
         <Link
           href="/quizzes"
-          className="text-lg font-semibold text-zinc-900 dark:text-zinc-50"
+          className="flex items-center gap-2 text-lg font-semibold tracking-tight transition-opacity hover:opacity-90"
         >
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+            <ListChecks className="h-4 w-4" aria-hidden="true" />
+          </span>
           Quiz Builder
         </Link>
-        <nav className="flex gap-4 text-sm font-medium">
+        <nav className="flex gap-1 text-sm font-medium">
           {NAV_LINKS.map((link) => {
             const active =
               pathname === link.href || pathname?.startsWith(`${link.href}/`);
@@ -32,11 +36,11 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={
+                className={`rounded-md px-3 py-1.5 transition-colors ${
                   active
-                    ? "text-zinc-900 dark:text-zinc-50"
-                    : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-                }
+                    ? "bg-primary text-white"
+                    : "text-white/70 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 {link.label}
               </Link>

@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useState, useTransition } from "react";
+import { Plus, AlertCircle, FileQuestion, Loader2 } from "lucide-react";
 import { QuizCard } from "@/components/quiz/QuizCard";
+import { Button, LinkButton } from "@/components/ui/Button";
 import { deleteQuiz, getQuizzes } from "@/services/api";
 import { QuizSummary } from "@/types/quiz";
 
@@ -23,9 +24,9 @@ export default function QuizzesPage() {
     }
   }, []);
 
-  // Wrapping the effect's async fetch in startTransition is the pattern
-  // Next.js's own docs use for "fetch + setState inside useEffect" — see
-  // node_modules/next/dist/docs/.../07-mutating-data.md's useEffect example.
+  // startTransition marks the fetch-triggered state updates as a
+  // transition instead of a plain synchronous effect update, which is what
+  // React wants for async work kicked off from inside useEffect.
   useEffect(() => {
     startTransition(() => {
       fetchQuizzes();
@@ -54,48 +55,48 @@ export default function QuizzesPage() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">
           Quizzes
         </h1>
-        <Link
-          href="/create"
-          className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-        >
+        <LinkButton href="/create">
+          <Plus className="h-4 w-4" aria-hidden="true" />
           New quiz
-        </Link>
+        </LinkButton>
       </div>
 
       {status === "loading" && (
-        <p className="text-zinc-500 dark:text-zinc-400">Loading…</p>
+        <div className="flex items-center gap-2 py-8 text-ink-soft">
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          Loading…
+        </div>
       )}
 
       {status === "error" && (
-        <div className="flex flex-col items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
-          <p>Couldn&apos;t load quizzes. Is the backend running?</p>
-          <button
-            type="button"
-            onClick={retry}
-            className="rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium hover:bg-red-100 dark:border-red-800 dark:hover:bg-red-900"
-          >
+        <div className="flex flex-col items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-5 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+          <div className="flex items-center gap-2 font-medium">
+            <AlertCircle className="h-5 w-5" aria-hidden="true" />
+            Couldn&apos;t load quizzes
+          </div>
+          <p className="text-sm">Is the backend running?</p>
+          <Button variant="outline" size="sm" onClick={retry}>
             Retry
-          </button>
+          </Button>
         </div>
       )}
 
       {status === "ready" && quizzes.length === 0 && (
-        <div className="flex flex-col items-start gap-3 rounded-lg border border-dashed border-zinc-300 p-6 text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border py-16 text-center text-ink-soft">
+          <FileQuestion className="h-8 w-8 text-primary" aria-hidden="true" />
           <p>No quizzes yet.</p>
-          <Link
-            href="/create"
-            className="font-medium text-zinc-900 underline dark:text-zinc-50"
-          >
-            Create one
-          </Link>
+          <LinkButton href="/create" size="sm">
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            Create your first quiz
+          </LinkButton>
         </div>
       )}
 
       {status === "ready" && quizzes.length > 0 && (
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col gap-2.5">
           {quizzes.map((quiz) => (
             <QuizCard key={quiz.id} quiz={quiz} onDelete={handleDelete} />
           ))}

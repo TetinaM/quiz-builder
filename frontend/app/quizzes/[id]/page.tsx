@@ -9,7 +9,7 @@ import { QuizDetail } from "@/types/quiz";
 export default async function QuizDetailPage({
   params,
 }: {
-  // `params` is a Promise in this Next.js version — see rules/05-frontend-rules.md.
+  // Route params are async in this Next.js version.
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
@@ -29,11 +29,11 @@ export default async function QuizDetailPage({
       <div>
         <Link
           href="/quizzes"
-          className="text-sm text-zinc-500 hover:underline dark:text-zinc-400"
+          className="text-sm text-ink-soft transition-colors hover:text-primary"
         >
           ← All quizzes
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-ink">
           {quiz.title}
         </h1>
       </div>

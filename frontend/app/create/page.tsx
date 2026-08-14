@@ -4,7 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
+import { AlertCircle, Loader2, Plus } from "lucide-react";
 import { QuestionFormItem } from "@/components/quiz/QuestionFormItem";
+import { Button } from "@/components/ui/Button";
 import {
   createQuizFormSchema,
   CreateQuizFormInput,
@@ -61,7 +63,7 @@ export default function CreateQuizPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
-      <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+      <h1 className="text-2xl font-semibold tracking-tight text-ink">
         Create a quiz
       </h1>
 
@@ -71,15 +73,16 @@ export default function CreateQuizPage() {
         className="flex flex-col gap-6"
       >
         {submitError && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+          <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             {submitError}
           </div>
         )}
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-surface p-5 shadow-sm">
           <label
             htmlFor="quiz-title"
-            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            className="text-sm font-medium text-ink-soft"
           >
             Quiz title
           </label>
@@ -87,7 +90,7 @@ export default function CreateQuizPage() {
             id="quiz-title"
             {...register("title")}
             placeholder="e.g. Capitals Quiz"
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary-soft"
           />
           {errors.title && (
             <p className="text-sm text-red-600 dark:text-red-400">
@@ -116,21 +119,23 @@ export default function CreateQuizPage() {
           </p>
         )}
 
-        <button
-          type="button"
-          onClick={() => appendQuestion(emptyQuestion())}
-          className="self-start rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-        >
-          + Add question
-        </button>
+        <div className="flex items-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => appendQuestion(emptyQuestion())}
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            Add question
+          </Button>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="self-start rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-        >
-          {isSubmitting ? "Creating…" : "Create quiz"}
-        </button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting && (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            )}
+            {isSubmitting ? "Creating…" : "Create quiz"}
+          </Button>
+        </div>
       </form>
     </main>
   );

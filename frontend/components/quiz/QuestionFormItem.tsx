@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import {
   Control,
   Controller,
@@ -10,6 +10,7 @@ import {
   useFieldArray,
   useWatch,
 } from "react-hook-form";
+import { Button } from "@/components/ui/Button";
 import { CreateQuizFormInput, emptyQuestion } from "@/lib/validation";
 import { QuestionType } from "@/types/quiz";
 
@@ -30,14 +31,12 @@ const QUESTION_TYPES: { value: QuestionType; label: string }[] = [
 ];
 
 const fieldClass =
-  "rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50";
+  "rounded-lg border border-border bg-background px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary-soft";
 const errorClass = "text-sm text-red-600 dark:text-red-400";
-const iconButtonClass =
-  "shrink-0 rounded-md p-2 text-zinc-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-zinc-400 dark:hover:bg-red-950 dark:hover:text-red-400";
 
 // One question's editable block in the create form. Not fetch/services-
-// aware — takes RHF's `control`/`register`/`setValue`/`errors` as props from
-// the page, per rules/05-frontend-rules.md's component-layering rule.
+// aware — takes React Hook Form's `control`/`register`/`setValue`/`errors`
+// as props from the page, which owns the actual form and the submit call.
 export function QuestionFormItem({
   control,
   register,
@@ -69,7 +68,7 @@ export function QuestionFormItem({
   }
 
   return (
-    <li className="flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+    <li className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-5 shadow-sm transition-shadow focus-within:shadow-md">
       {/* Stacked on mobile (the <select> doesn't shrink like a text input
           does, so keeping this a single row down to 375px overflows) —
           inline again from `sm:` up. */}
@@ -77,9 +76,12 @@ export function QuestionFormItem({
         <div className="flex flex-1 flex-col gap-1">
           <label
             htmlFor={`question-${index}-text`}
-            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            className="flex items-center gap-2 text-sm font-medium text-ink-soft"
           >
-            Question {index + 1}
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
+              {index + 1}
+            </span>
+            Question
           </label>
           <input
             id={`question-${index}-text`}
@@ -106,30 +108,34 @@ export function QuestionFormItem({
             ))}
           </select>
 
-          <button
+          <Button
             type="button"
+            variant="danger-ghost"
+            size="icon"
             onClick={onRemove}
             disabled={!canRemove}
             aria-label={`Remove question ${index + 1}`}
-            className={iconButtonClass}
           >
             <Trash2 className="h-4 w-4" aria-hidden="true" />
-          </button>
+          </Button>
         </div>
       </div>
 
       {type === "BOOLEAN" && (
         <div className="flex flex-col gap-1">
+          {/* Controller instead of register(): a radio's native value is
+              always a string, but we need a real boolean in form state. */}
           <Controller
             control={control}
             name={`questions.${index}.correctBoolean`}
             render={({ field }) => (
-              <div className="flex gap-6 text-sm text-zinc-700 dark:text-zinc-300">
+              <div className="flex gap-6 text-sm text-ink-soft">
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
                     checked={field.value === true}
                     onChange={() => field.onChange(true)}
+                    className="accent-primary"
                   />
                   True
                 </label>
@@ -138,6 +144,7 @@ export function QuestionFormItem({
                     type="radio"
                     checked={field.value === false}
                     onChange={() => field.onChange(false)}
+                    className="accent-primary"
                   />
                   False
                 </label>
@@ -173,6 +180,7 @@ export function QuestionFormItem({
               <input
                 type="checkbox"
                 aria-label={`Option ${optionIndex + 1} is correct`}
+                className="accent-accent"
                 {...register(
                   `questions.${index}.options.${optionIndex}.isCorrect`,
                 )}
@@ -183,24 +191,28 @@ export function QuestionFormItem({
                 aria-label={`Option ${optionIndex + 1} text`}
                 className={`flex-1 ${fieldClass}`}
               />
-              <button
+              <Button
                 type="button"
+                variant="danger-ghost"
+                size="icon"
                 onClick={() => removeOption(optionIndex)}
                 disabled={optionFields.length <= 2}
                 aria-label={`Remove option ${optionIndex + 1}`}
-                className={iconButtonClass}
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
-              </button>
+              </Button>
             </div>
           ))}
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
+            className="self-start"
             onClick={() => appendOption({ text: "", isCorrect: false })}
-            className="self-start text-sm font-medium text-zinc-700 underline dark:text-zinc-300"
           >
-            + Add option
-          </button>
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            Add option
+          </Button>
           {questionErrors?.options?.message && (
             <p className={errorClass}>{questionErrors.options.message}</p>
           )}
