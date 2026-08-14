@@ -1,5 +1,9 @@
 // Quiz Builder — Prisma schema.
-// See ../../rules/03-database-schema.md for the full design rationale.
+//
+// Three question types share one Question table (nullable per-type answer
+// columns) plus a separate Option table for CHECKBOX choices, instead of a
+// JSON blob — keeps every field strongly typed at the cost of a few
+// always-null columns depending on question type.
 
 generator client {
   provider = "prisma-client-js"
