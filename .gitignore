@@ -1,0 +1,34 @@
+# dependencies
+node_modules/
+
+# env files (never commit real secrets/config)
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.local.example
+
+# build output
+dist/
+build/
+.next/
+out/
+
+# prisma
+backend/prisma/dev.db
+backend/prisma/dev.db-journal
+
+# logs
+*.log
+npm-debug.log*
+
+# editor/OS
+.DS_Store
+.vscode/
+.idea/
+
+# test/coverage
+coverage/
+
+# internal working rules — not part of the deliverable, not committed
+rules/
