@@ -32,3 +32,4 @@ coverage/
 
 # internal working rules — not part of the deliverable, not committed
 rules/
+artifacts/
